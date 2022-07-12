@@ -84,7 +84,6 @@ class TimerCompanionState extends State<TimerCompanion> {
         id: _indexGeneral,
         tiempoLlegada: timestamp,
         numCorredor: null,
-        respuestasCorrectas: null,
         registrado: 0);
     await LlegadaDB.db.addLlegada(_llegadaARegistrar);
     setState(() {
@@ -147,7 +146,6 @@ class TimerCompanionState extends State<TimerCompanion> {
                                     UpdateLlegada(
                                       tileIndex: index,
                                       formattedTime: tiempoFormatted,
-                                      respuestas: item.respuestasCorrectas,
                                       numCorredor: item.numCorredor,
                                     )));
                           }
