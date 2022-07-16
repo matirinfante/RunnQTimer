@@ -34,6 +34,14 @@ class LlegadaDB {
     return result.isNotEmpty ? Llegada.fromMap(result.first) : null;
   }
 
+  //Query
+  Future<Llegada?> getLlegadaByRunner(String numCorredor) async {
+    final db = await initializeDB();
+    var result = await db
+        .query("Llegada", where: "numCorredor = ?", whereArgs: [numCorredor]);
+    return result.isNotEmpty ? Llegada.fromMap(result.first) : null;
+  }
+
   //Insert
   addLlegada(Llegada llegada) async {
     final db = await initializeDB();
