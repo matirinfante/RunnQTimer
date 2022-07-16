@@ -1,11 +1,12 @@
 class Llegada {
-  int id, registrado;
-  String? numCorredor, tiempoLlegada;
+  int? id, registrado;
+  String? numCorredor;
+  String tiempoLlegada;
 
   Llegada(
-      {required this.id,
+      {this.id,
       this.numCorredor,
-      this.tiempoLlegada,
+      required this.tiempoLlegada,
       required this.registrado});
 
   Map<String, dynamic> toMap() => {

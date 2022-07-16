@@ -7,6 +7,9 @@ import 'package:runnq/Models/Llegada.dart';
 import 'package:runnq/db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'LlegadaEdit.dart';
+import 'UpdateLlegada.dart';
+
 //TODO DRAWER RESET
 //TODO LIMPIAR CODIGO
 class TimerCompanion extends StatefulWidget {
@@ -19,15 +22,22 @@ class TimerCompanionState extends State<TimerCompanion> {
   int _indexGeneral = 0;
   late ScrollController _controller;
 
+  late LlegadaDB _db;
+
+  @override
   void initState() {
     super.initState();
-    _controller = new ScrollController();
-    _obtenerIndex();
+    _controller = ScrollController();
+    this._db = LlegadaDB();
+    this._db.initializeDB().whenComplete(() async {
+      _obtenerIndex();
+      setState(() {});
+    });
   }
 
   void _moverArriba() {
     _controller.animateTo(_controller.offset + 100,
-        duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
   }
 
   @override
@@ -38,7 +48,7 @@ class TimerCompanionState extends State<TimerCompanion> {
 
   //Funcion que obtiene el indice actual almacenado en la base de datos
   void _obtenerIndex() async {
-    List<Llegada> llegadas = await LlegadaDB.db.getLlegadas();
+    List<Llegada> llegadas = await _db.getLlegadas();
     setState(() {
       _indexGeneral = llegadas.length;
     });
@@ -47,7 +57,7 @@ class TimerCompanionState extends State<TimerCompanion> {
   Future<String> pasarBDaJSON() async {
     //final file = await _localFile;
     String s = '[';
-    List<Llegada> data = await LlegadaDB.db.getLlegadas();
+    List<Llegada> data = await _db.getLlegadas();
     data.forEach((element) {
       if (element == data.last) {
         s += jsonEncode(element);
@@ -69,7 +79,7 @@ class TimerCompanionState extends State<TimerCompanion> {
 
   //Funcion que borra toda la tabla
   void resetDB() async {
-    await LlegadaDB.db.dropLlegada();
+    await _db.dropLlegada();
     var prefs = await SharedPreferences.getInstance();
     prefs.setInt('horaLargada', 0);
     setState(() {
@@ -85,7 +95,7 @@ class TimerCompanionState extends State<TimerCompanion> {
         tiempoLlegada: timestamp,
         numCorredor: null,
         registrado: 0);
-    await LlegadaDB.db.addLlegada(_llegadaARegistrar);
+    await _db.addLlegada(_llegadaARegistrar);
     setState(() {
       _indexGeneral += 1;
     });
@@ -114,22 +124,22 @@ class TimerCompanionState extends State<TimerCompanion> {
           Flexible(
             flex: 8,
             child: FutureBuilder<List<Llegada>>(
-              future: LlegadaDB.db.getLlegadas(),
+              future: _db.getLlegadas(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Llegada>> snapshot) {
                 if (snapshot.hasData) {
                   return ListView.separated(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     reverse: true,
                     controller: _controller,
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      Llegada item = snapshot.data[index];
+                      Llegada item = snapshot.data![index];
                       final tiempoFormatted = item.tiempoLlegada;
                       String numEquipo =
                           item.numCorredor ?? "Falta Número de Equipo";
                       return ListTile(
-                        leading: Icon(Icons.access_alarms),
+                        leading: const Icon(Icons.access_alarms),
                         title: Text('$tiempoFormatted - $numEquipo'),
                         trailing: Icon(item.registrado == 0
                             ? Icons.navigate_next
@@ -153,11 +163,11 @@ class TimerCompanionState extends State<TimerCompanion> {
                       );
                     },
                     separatorBuilder: (BuildContext context, index) {
-                      return Divider();
+                      return const Divider();
                     },
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               },
             ),
@@ -179,7 +189,7 @@ class TimerCompanionState extends State<TimerCompanion> {
                         onPressed: () {
                           _addLlegada();
                         },
-                        child: Text("REGISTRAR"),
+                        child: const Text("REGISTRAR"),
                       ),
                     ),
                     Expanded(
@@ -188,7 +198,7 @@ class TimerCompanionState extends State<TimerCompanion> {
                         minWidth: MediaQuery.of(context).size.width,
                         color: Colors.deepOrangeAccent,
                         onPressed: _enviarDatos,
-                        child: Text("ENVIAR DATOS"),
+                        child: const Text("ENVIAR DATOS"),
                       ),
                     )
                   ],
