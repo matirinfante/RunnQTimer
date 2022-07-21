@@ -19,10 +19,6 @@ class Index extends StatelessWidget {
               child: const Text('Maraton'),
             ),
           ),
-          NiceButtons(
-            onTap: (tap) {},
-            child: const Text("Carrera trivia"),
-          )
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pin_keyboard/pin_keyboard.dart';
 import 'package:runnq/Views/TimerCompanion.dart';
 
 import '../Models/Llegada.dart';
@@ -119,34 +120,25 @@ class _LlegadaEditState extends State<LlegadaEdit> {
                 ],
               ),
             ),
-            Divider(),
             Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  const Text('Número de Corredor:'),
-                  SizedBox(
-                    width: 70,
-                    child: TextField(
-                      keyboardType: TextInputType.numberWithOptions(),
-                      onChanged: (value) async {
-                        _numCorredor = value;
-                      },
-                    ),
+              child: Column(
+                children: [
+                  PinKeyboard(
+                    length: 4,
+                    enableBiometric: false,
+                    iconBiometricColor: Colors.blue[400],
+                    onChange: (value) {},
+                    onConfirm: (value) async {
+                      _numCorredor = value;
+                    },
+                  ),
+                  MaterialButton(
+                    child: const Icon(Icons.send),
+                    onPressed: () {},
                   )
                 ],
               ),
-            ),
-            Expanded(
-                child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: MaterialButton(
-                onPressed: _datosCargados ? null : _subirDatos,
-                color: Colors.amber,
-                child: const Text('Subir datos'),
-              ),
-            ))
+            )
           ]),
         ),
       ),

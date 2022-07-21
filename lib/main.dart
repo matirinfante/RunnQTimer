@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:runnq/Views/Index.dart';
 
 void main() {
+  Intl.defaultLocale = 'es_AR';
   runApp(const MyApp());
 }
 

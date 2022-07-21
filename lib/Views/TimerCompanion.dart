@@ -89,7 +89,7 @@ class TimerCompanionState extends State<TimerCompanion> {
 
   //Funcion que agrega una llegada a la base de datos e incrementa el indexGeneral
   void _addLlegada() async {
-    String timestamp = DateTime.now().toIso8601String();
+    String timestamp = DateTime.now().toLocal().toString();
     var _llegadaARegistrar = Llegada(
         id: _indexGeneral,
         tiempoLlegada: timestamp,
